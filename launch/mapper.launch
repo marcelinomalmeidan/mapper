@@ -1,0 +1,63 @@
+<launch>
+  <node pkg="mapper"
+    type="mapper"
+    name="mapper_node"
+    output="screen">
+
+    <!-- Set of depth camera topics -->
+    <rosparam param="depth_cam_topics"> ["/cam1/depth",
+                                         "/cam2/depth"] </rosparam>
+
+    <!-- Set parameters for the mapper -->
+    <param name="mapResolution" value="0.1"/>          <!-- meters -->
+    <param name="maxRange" value="5"/>                 <!-- meters -->
+    <param name="minRange" value="0.20"/>              <!-- meters -->
+
+    <!-- Time to forget information (set as negative if infinity) -->
+    <param name="memoryTime" value="-30.0"/>           <!-- seconds -->
+
+    <!-- Fading memory thread update rate (Hz) -->
+    <param name="fading_memory_update_rate" value="1"/><!-- Hz -->
+
+    <!-- Map inflation parameters -->
+    <!-- <param name="inflateMap" value="true"/>   <!-- true/false -->
+    <param name="inflateRadius" value="0.25"/>       <!-- meters -->
+
+    <!-- Camera FOV (radians): map is only updated within this FOV -->
+    <param name="cam_fov" value="0.85"/>             <!-- radians -->
+
+    <!-- Camera's width divided by height (unitless) -->
+    <param name="cam_aspect_ratio" value="1.3099"/>  <!-- meters -->
+
+    <!-- Map probabilities -->
+    <param name="occupancy_threshold" value="0.5"/>     <!-- 0-1 -->
+    <param name="probability_hit" value="0.7"/>         <!-- 0-1 -->
+    <param name="probability_miss" value="0.25"/>       <!-- 0-1 -->
+    <param name="clamping_threshold_min" value="0.1"/>  <!-- 0-1 -->
+    <param name="clamping_threshold_max" value="0.9"/>  <!-- 0-1 -->
+    
+    <!-- Collision Checking parameters -->
+    <param name="traj_compression_max_dev" value="0.01"/>     <!-- meters -->
+    <param name="traj_compression_resolution" value="0.02"/>  <!-- meters -->
+    <param name="collision_check_rate" value="0.01"/>         <!-- Hz -->
+
+    <!-- Frequency at which tf listeners update tf -->
+    <param name="tf_update_rate" value="10"/>            <!-- Hz -->
+
+    <!-- Service names -->
+    <param name="update_resolution" value="mapper/update_resolution"/>
+    <param name="update_memory_time" value="mapper/update_memory_time"/>
+    <param name="update_inflation_radius" value="mapper/update_inflation_radius"/>
+    <param name="reset_map" value="mapper/reset_map"/>
+
+    <!-- Publisher names -->
+    <param name="obstacle_markers" value="mapper/obstacle_markers"/>
+    <param name="free_space_markers" value="mapper/free_space_markers"/>
+    <param name="inflated_obstacle_markers" value="mapper/inflated_obstacle_markers"/>
+    <param name="inflated_free_space_markers" value="mapper/inflated_free_space_markers"/>
+    <param name="frustum_markers" value="mapper/frustum_markers"/>
+    <param name="discrete_trajectory_markers" value="mapper/discrete_trajectory_markers"/>
+    <param name="collision_detection" value="mapper/collisions"/>
+
+  </node>
+</launch>
