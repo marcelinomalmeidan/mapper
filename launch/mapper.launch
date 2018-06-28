@@ -5,8 +5,10 @@
     output="screen">
 
     <!-- Set of depth camera topics -->
-    <rosparam param="depth_cam_topics"> ["/cam1/depth",
-                                         "/cam2/depth"] </rosparam>
+    <param name="depth_cam_prefix" value="/"/>          <!-- meters -->
+    <rosparam param="depth_cam_topics"> ["camera1",
+                                         "camera2"] </rosparam>
+    <param name="depth_cam_suffix" value="/depth/points"/>          <!-- meters -->
 
     <!-- Set parameters for the mapper -->
     <param name="mapResolution" value="0.1"/>          <!-- meters -->

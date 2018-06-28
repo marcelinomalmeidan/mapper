@@ -43,50 +43,14 @@ MapperClass::~MapperClass() {
 }
 
 void MapperClass::Initialize(ros::NodeHandle *nh) {
-  // // Grab some configuration parameters for this node from the config reader
-  //   cfg_.Initialize(GetPrivateHandle(), "mobility/mapper.config");
-  //   cfg_.Listen(boost::bind(&MapperClass::ReconfigureCallback, this, _1));
-
-  //   // Setup a timer to forward diagnostics
-  //   timer_d_ = nh->createTimer(
-  //       ros::Duration(ros::Rate(DEFAULT_DIAGNOSTICS_RATE)),
-  //       &MapperClass::DiagnosticsCallback, this, false, true);
-
-  //   // load parameters
-  //   double map_resolution, memory_time, max_range, min_range, inflate_radius;
-  //   double cam_fov, aspect_ratio;
-  //   double occupancy_threshold, probability_hit, probability_miss;
-  //   double clamping_threshold_max, clamping_threshold_min;
-  //   double traj_resolution, compression_max_dev;
-  //   bool use_haz_cam, use_perch_cam;
-  //   map_resolution = cfg_.Get<double>("map_resolution");
-  //   max_range = cfg_.Get<double>("max_range");
-  //   min_range = cfg_.Get<double>("min_range");
-  //   memory_time = cfg_.Get<double>("memory_time");
-  //   inflate_radius = cfg_.Get<double>("inflate_radius");
-  //   cam_fov = cfg_.Get<double>("cam_fov");
-  //   aspect_ratio = cfg_.Get<double>("cam_aspect_ratio");
-  //   occupancy_threshold = cfg_.Get<double>("occupancy_threshold");
-  //   probability_hit = cfg_.Get<double>("probability_hit");
-  //   probability_miss = cfg_.Get<double>("probability_miss");
-  //   clamping_threshold_min = cfg_.Get<double>("clamping_threshold_min");
-  //   clamping_threshold_max = cfg_.Get<double>("clamping_threshold_max");
-  //   compression_max_dev = cfg_.Get<double>("traj_compression_max_dev");
-  //   traj_resolution = cfg_.Get<double>("traj_compression_resolution");
-  //   tf_update_rate_ = cfg_.Get<double>("tf_update_rate");
-  //   fading_memory_update_rate_ = cfg_.Get<double>("fading_memory_update_rate");
-  //   use_haz_cam = cfg_.Get<bool>("use_haz_cam");
-  //   use_perch_cam = cfg_.Get<bool>("use_perch_cam");
 
     // Load parameters
-    std::vector<std::string> depth_cam_topics;
     double map_resolution, memory_time, max_range, min_range, inflate_radius;
     double cam_fov, aspect_ratio;
     double occupancy_threshold, probability_hit, probability_miss;
     double clamping_threshold_max, clamping_threshold_min;
     double traj_resolution, compression_max_dev;
     bool use_haz_cam, use_perch_cam;
-    nh->getParam("depth_cam_topics", depth_cam_topics);
     nh->getParam("map_resolution", map_resolution);
     nh->getParam("max_range", max_range);
     nh->getParam("min_range", min_range);
@@ -105,6 +69,13 @@ void MapperClass::Initialize(ros::NodeHandle *nh) {
     nh->getParam("fading_memory_update_rate", fading_memory_update_rate_);
     nh->getParam("use_haz_cam", use_haz_cam);
     nh->getParam("use_perch_cam", use_perch_cam);
+
+    // Load depth camera names
+    std::vector<std::string> depth_cam_topics;
+    std::string depth_cam_prefix, depth_cam_suffix;
+    nh->getParam("depth_cam_topics", depth_cam_topics);
+    nh->getParam("depth_cam_prefix", depth_cam_prefix);
+    nh->getParam("depth_cam_suffix", depth_cam_suffix);
 
     // Load service names
     std::string resolution_srv_name, memory_time_srv_name;
@@ -142,13 +113,22 @@ void MapperClass::Initialize(ros::NodeHandle *nh) {
     globals_.sampled_traj.SetMaxDev(compression_max_dev);
     globals_.sampled_traj.SetResolution(traj_resolution);
 
+    // Set tf vector to have as many entries as the number of cameras
+    globals_.tf_cameras2world.resize(depth_cam_topics.size());
+    h_cameras_tf_thread_.resize(depth_cam_topics.size());
+    cameras_sub_.resize(depth_cam_topics.size());
+
     // threads --------------------------------------------------
-    h_haz_tf_thread_ = std::thread(&MapperClass::HazTfTask, this);
-    h_perch_tf_thread_ = std::thread(&MapperClass::PerchTfTask, this);
-    h_body_tf_thread_ = std::thread(&MapperClass::BodyTfTask, this);
+    // h_haz_tf_thread_ = std::thread(&MapperClass::BodyTfTask, this);
     h_octo_thread_ = std::thread(&MapperClass::OctomappingTask, this);
     h_fade_thread_ = std::thread(&MapperClass::FadeTask, this);
     h_collision_check_thread_ = std::thread(&MapperClass::CollisionCheckTask, this);
+
+    // Camera subscribers and tf threads ----------------------------------------------
+    for (uint i = 0; i < depth_cam_topics.size(); i++) {
+        std::string cam = depth_cam_prefix + depth_cam_topics[i] + depth_cam_suffix;
+        // cameras_sub_[i] = nh->subscribe(cam, 10, boost::bind(&MapperClass::PclCallback, this, _1, i));
+    }
 
     // Create services ------------------------------------------
     resolution_srv_ = nh->advertiseService(
@@ -160,9 +140,6 @@ void MapperClass::Initialize(ros::NodeHandle *nh) {
     reset_map_srv_ = nh->advertiseService(
         reset_map_srv_name, &MapperClass::ResetMap, this);
 
-    // // Subscribers ----------------------------------------------
-    std::string cam_prefix = "";
-    std::string cam_suffix = "/points";
     // if (use_haz_cam) {
     //     std::string cam = TOPIC_HARDWARE_NAME_HAZ_CAM;
     //     haz_sub_ = nh->subscribe(cam_prefix + cam + cam_suffix, 10, &MapperClass::PclCallback, this);

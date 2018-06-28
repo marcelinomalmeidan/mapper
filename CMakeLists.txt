@@ -9,7 +9,6 @@ add_compile_options(-std=c++11)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
-  octomap
   pcl_conversions
   pcl_ros
   roscpp
@@ -23,6 +22,9 @@ find_package(catkin REQUIRED COMPONENTS
 
 find_package(
   Eigen REQUIRED)
+
+find_package(
+  octomap REQUIRED)
 
 find_package(
   Boost COMPONENTS thread)
