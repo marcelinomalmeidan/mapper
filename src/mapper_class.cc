@@ -37,6 +37,10 @@ MapperClass::~MapperClass() {
     h_fade_thread_.join();
     h_collision_check_thread_.join();
 
+    for(uint i = 0; i < h_cameras_tf_thread_.size(); i++) {
+      h_cameras_tf_thread_[i].join();
+    }
+
     // destroy mutexes and semaphores
     mutexes_.destroy();
     semaphores_.destroy();
@@ -71,11 +75,15 @@ void MapperClass::Initialize(ros::NodeHandle *nh) {
     nh->getParam("use_perch_cam", use_perch_cam);
 
     // Load depth camera names
-    std::vector<std::string> depth_cam_topics;
+    std::vector<std::string> depth_cam_names;
     std::string depth_cam_prefix, depth_cam_suffix;
-    nh->getParam("depth_cam_topics", depth_cam_topics);
+    nh->getParam("depth_cam_names", depth_cam_names);
     nh->getParam("depth_cam_prefix", depth_cam_prefix);
     nh->getParam("depth_cam_suffix", depth_cam_suffix);
+
+    // Load inertial frame id
+    std::string inertial_frame_id;
+    nh->getParam("inertial_frame_id", inertial_frame_id);
 
     // Load service names
     std::string resolution_srv_name, memory_time_srv_name;
@@ -114,9 +122,9 @@ void MapperClass::Initialize(ros::NodeHandle *nh) {
     globals_.sampled_traj.SetResolution(traj_resolution);
 
     // Set tf vector to have as many entries as the number of cameras
-    globals_.tf_cameras2world.resize(depth_cam_topics.size());
-    h_cameras_tf_thread_.resize(depth_cam_topics.size());
-    cameras_sub_.resize(depth_cam_topics.size());
+    globals_.tf_cameras2world.resize(depth_cam_names.size());
+    h_cameras_tf_thread_.resize(depth_cam_names.size());
+    cameras_sub_.resize(depth_cam_names.size());
 
     // threads --------------------------------------------------
     // h_haz_tf_thread_ = std::thread(&MapperClass::BodyTfTask, this);
@@ -125,9 +133,11 @@ void MapperClass::Initialize(ros::NodeHandle *nh) {
     h_collision_check_thread_ = std::thread(&MapperClass::CollisionCheckTask, this);
 
     // Camera subscribers and tf threads ----------------------------------------------
-    for (uint i = 0; i < depth_cam_topics.size(); i++) {
-        std::string cam = depth_cam_prefix + depth_cam_topics[i] + depth_cam_suffix;
-        // cameras_sub_[i] = nh->subscribe(cam, 10, boost::bind(&MapperClass::PclCallback, this, _1, i));
+    for (uint i = 0; i < depth_cam_names.size(); i++) {
+        std::string cam = depth_cam_prefix + depth_cam_names[i] + depth_cam_suffix;
+        cameras_sub_[i] = nh->subscribe<sensor_msgs::PointCloud2>
+              (cam, 10, boost::bind(&MapperClass::PclCallback, this, _1, i));
+        h_cameras_tf_thread_[i] = std::thread(&MapperClass::TfTask, inertial_frame_id, depth_cam_names[i]);
     }
 
     // Create services ------------------------------------------

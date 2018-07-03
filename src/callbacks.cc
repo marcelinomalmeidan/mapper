@@ -27,7 +27,7 @@ void MapperClass::PclCallback(const sensor_msgs::PointCloud2::ConstPtr &msg,
                               const uint& cam_index) {
     // Structure to include pcl and its frame
     stampedPcl new_pcl;
-    uint max_queue_size = 4;
+    uint max_queue_size = 10;
 
     // Convert message into pcl type
     pcl::PointCloud< pcl::PointXYZ > cloud;
@@ -35,14 +35,15 @@ void MapperClass::PclCallback(const sensor_msgs::PointCloud2::ConstPtr &msg,
     new_pcl.cloud = cloud;
 
     // Get transform from camera to world
-    const std::string pcl_frame = cloud.header.frame_id;
-    pthread_mutex_lock(&mutexes_.tf);
-        if (!pcl_frame.compare("haz_cam")) {
-            new_pcl.tf_cam2world = globals_.tf_cam2world;
-        } else if (!pcl_frame.compare("perch_cam")) {
-            new_pcl.tf_cam2world = globals_.tf_perch2world;
-        }
-    pthread_mutex_unlock(&mutexes_.tf);
+    new_pcl.tf_cam2world = globals_.tf_cameras2world[cam_index];
+    // const std::string pcl_frame = cloud.header.frame_id;
+    // pthread_mutex_lock(&mutexes_.tf);
+    //     if (!pcl_frame.compare("haz_cam")) {
+    //         new_pcl.tf_cam2world = globals_.tf_cam2world;
+    //     } else if (!pcl_frame.compare("perch_cam")) {
+    //         new_pcl.tf_cam2world = globals_.tf_perch2world;
+    //     }
+    // pthread_mutex_unlock(&mutexes_.tf);
 
     // save into global variables
     pthread_mutex_lock(&mutexes_.point_cloud);

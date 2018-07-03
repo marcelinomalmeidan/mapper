@@ -109,6 +109,28 @@ void MapperClass::BodyTfTask() {
     ROS_DEBUG("Exiting body tf Thread...");
 }
 
+// Thread for updating the tfTree values
+void MapperClass::TfTask(const std::string& parent_frame,
+                         const std::string& child_frame,
+                         const uint& index) {
+    ROS_DEBUG("tf Thread from frame `%s` to `%s` started with rate %f: ", 
+              child_frame, parent_frame, tf_update_rate_);
+    tf_listener::TfClass obj_tf;
+    ros::Rate loop_rate(tf_update_rate_);
+
+    while (ros::ok()) {
+        // Get the transform
+        obj_tf.GetTransform(child_frame, parent_frame);
+
+        pthread_mutex_lock(&mutexes_.tf);
+            globals_.tf_cameras2world[index] = obj_tf.transform_;
+        pthread_mutex_unlock(&mutexes_.tf);
+        loop_rate.sleep();
+    }
+
+    ROS_DEBUG("Exiting body tf Thread...");
+}
+
 void MapperClass::CollisionCheckTask() {
     ROS_DEBUG("collisionCheck Thread started!");
 

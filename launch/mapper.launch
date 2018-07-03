@@ -5,10 +5,13 @@
     output="screen">
 
     <!-- Set of depth camera topics -->
-    <param name="depth_cam_prefix" value="/"/>          <!-- meters -->
-    <rosparam param="depth_cam_topics"> ["camera1",
+    <param name="depth_cam_prefix" value="/"/>
+    <rosparam param="depth_cam_names"> ["camera1",
                                          "camera2"] </rosparam>
-    <param name="depth_cam_suffix" value="/depth/points"/>          <!-- meters -->
+    <param name="depth_cam_suffix" value="/depth/points"/>
+
+    <!-- Inertial frame name (used for getting tf tree information) -->
+    <param name="inertial_frame_id" value="/map"/>
 
     <!-- Set parameters for the mapper -->
     <param name="mapResolution" value="0.1"/>          <!-- meters -->
