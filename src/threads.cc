@@ -114,7 +114,7 @@ void MapperClass::TfTask(const std::string& parent_frame,
                          const std::string& child_frame,
                          const uint& index) {
     ROS_DEBUG("tf Thread from frame `%s` to `%s` started with rate %f: ", 
-              child_frame, parent_frame, tf_update_rate_);
+              child_frame.c_str(), parent_frame.c_str(), tf_update_rate_);
     tf_listener::TfClass obj_tf;
     ros::Rate loop_rate(tf_update_rate_);
 
