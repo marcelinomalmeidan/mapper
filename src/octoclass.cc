@@ -507,7 +507,7 @@ void OctoClass::TreeVisMarkers(visualization_msgs::MarkerArray* obstacles,
     for (unsigned i= 0; i < obstacles->markers.size(); ++i) {
         const double size = tree_.getNodeSize(i);
 
-        obstacles->markers[i].header.frame_id = "world";
+        obstacles->markers[i].header.frame_id = "map";
         obstacles->markers[i].header.stamp = rostime;
         obstacles->markers[i].ns = "obstacleMap";
         obstacles->markers[i].id = i;
@@ -575,7 +575,7 @@ void OctoClass::InflatedVisMarkers(visualization_msgs::MarkerArray* obstacles,
     for (unsigned i= 0; i < obstacles->markers.size(); ++i) {
         const double size = tree_inflated_.getNodeSize(i);
 
-        obstacles->markers[i].header.frame_id = "world";
+        obstacles->markers[i].header.frame_id = "map";
         obstacles->markers[i].header.stamp = rostime;
         obstacles->markers[i].ns = "obstacleMap";
         obstacles->markers[i].id = i;

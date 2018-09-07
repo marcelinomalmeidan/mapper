@@ -68,9 +68,10 @@ class MapperClass {
   MapperClass();
   ~MapperClass();
 
- protected:
   virtual void Initialize(ros::NodeHandle *nh);
 
+
+ protected:
   // Callbacks (see callbacks.cpp for implementation) ----------------
   // Callback for handling incoming point cloud messages
   void PclCallback(const sensor_msgs::PointCloud2::ConstPtr &msg,

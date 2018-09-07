@@ -6,27 +6,25 @@
 
     <!-- Set of depth camera topics -->
     <param name="depth_cam_prefix" value="/"/>
-    <rosparam param="depth_cam_names"> ["camera1",
-                                         "camera2"] </rosparam>
+    <rosparam param="depth_cam_names"> ["openni_camera_link"] </rosparam>
     <param name="depth_cam_suffix" value="/depth/points"/>
 
     <!-- Inertial frame name (used for getting tf tree information) -->
     <param name="inertial_frame_id" value="/map"/>
 
     <!-- Set parameters for the mapper -->
-    <param name="mapResolution" value="0.1"/>          <!-- meters -->
-    <param name="maxRange" value="5"/>                 <!-- meters -->
-    <param name="minRange" value="0.20"/>              <!-- meters -->
+    <param name="map_resolution" value="0.15"/>          <!-- meters -->
+    <param name="max_range" value="10"/>                 <!-- meters -->
+    <param name="min_range" value="0.50"/>              <!-- meters -->
 
     <!-- Time to forget information (set as negative if infinity) -->
-    <param name="memoryTime" value="-30.0"/>           <!-- seconds -->
+    <param name="memory_time" value="-30.0"/>           <!-- seconds -->
 
     <!-- Fading memory thread update rate (Hz) -->
     <param name="fading_memory_update_rate" value="1"/><!-- Hz -->
 
     <!-- Map inflation parameters -->
-    <!-- <param name="inflateMap" value="true"/>   <!-- true/false -->
-    <param name="inflateRadius" value="0.25"/>       <!-- meters -->
+    <param name="inflate_radius" value="0.25"/>       <!-- meters -->
 
     <!-- Camera FOV (radians): map is only updated within this FOV -->
     <param name="cam_fov" value="0.85"/>             <!-- radians -->

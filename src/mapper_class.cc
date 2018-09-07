@@ -71,8 +71,8 @@ void MapperClass::Initialize(ros::NodeHandle *nh) {
     nh->getParam("traj_compression_resolution", traj_resolution);
     nh->getParam("tf_update_rate", tf_update_rate_);
     nh->getParam("fading_memory_update_rate", fading_memory_update_rate_);
-    nh->getParam("use_haz_cam", use_haz_cam);
-    nh->getParam("use_perch_cam", use_perch_cam);
+    // nh->getParam("use_haz_cam", use_haz_cam);
+    // nh->getParam("use_perch_cam", use_perch_cam);
 
     // Load depth camera names
     std::vector<std::string> depth_cam_names;

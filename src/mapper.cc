@@ -2,7 +2,7 @@
 
 // Standard includes
 #include <ros/ros.h>
-// #include <mapper/mapper_class.h>
+#include <mapper/mapper_class.h>
 
 int main(int argc, char **argv) {
 
@@ -11,6 +11,8 @@ int main(int argc, char **argv) {
 	ros::init(argc, argv, "mapper_node");
 	ros::NodeHandle node("~");
 	
+	mapper::MapperClass octomapper;
+	octomapper.Initialize(&node);
 
 	ros::spin();
 
