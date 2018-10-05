@@ -106,6 +106,9 @@ void MapperClass::Initialize(ros::NodeHandle *nh) {
     nh->getParam("discrete_trajectory_markers", discrete_trajectory_markers_topic);
     nh->getParam("collision_detection", collision_detection_topic);
 
+    // Load current package path
+    nh->getParam("pkg_path", local_path_);
+
     // update tree parameters
     globals_.octomap.SetResolution(map_resolution);
     globals_.octomap.SetMaxRange(max_range);
@@ -131,6 +134,7 @@ void MapperClass::Initialize(ros::NodeHandle *nh) {
     h_octo_thread_ = std::thread(&MapperClass::OctomappingTask, this);
     h_fade_thread_ = std::thread(&MapperClass::FadeTask, this);
     h_collision_check_thread_ = std::thread(&MapperClass::CollisionCheckTask, this);
+    h_keyboard_thread_ = std::thread(&MapperClass::KeyboardTask, this);
 
     // Camera subscribers and tf threads ----------------------------------------------
     for (uint i = 0; i < depth_cam_names.size(); i++) {

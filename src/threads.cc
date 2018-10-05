@@ -330,4 +330,35 @@ void MapperClass::OctomappingTask() {
     ROS_DEBUG("Exiting OctomappingTask Thread...");
 }
 
+void MapperClass::KeyboardTask() {
+    ROS_DEBUG("KeyboardTask Thread started!");
+
+    std::string input_string;
+    while (ros::ok()) {
+        std::getline(std::cin, input_string);
+        ROS_INFO("Received command: %s", input_string.c_str());
+
+        std::string filename1 = local_path_ + "/maps/octomap.ot";
+        std::string filename2 = local_path_ + "/maps/octomap_inflated.ot";
+        if (input_string == "save_map") {
+            pthread_mutex_lock(&mutexes_.octomap);
+                globals_.octomap.tree_.write(filename1);
+                globals_.octomap.tree_inflated_.write(filename2);
+            pthread_mutex_unlock(&mutexes_.octomap);
+            
+            ROS_INFO("Maps saved in:\n%s \n%s\n", filename1.c_str(), filename2.c_str());
+        } else if (input_string == "load_map"){
+            octomap::OcTree* tree = dynamic_cast<octomap::OcTree*>(octomap::OcTree::read(filename1));
+            octomap::OcTree* tree_inflated = dynamic_cast<octomap::OcTree*>(octomap::OcTree::read(filename2));
+            if (tree && tree_inflated) {
+                pthread_mutex_lock(&mutexes_.octomap);
+                    globals_.octomap.CopyMap(*tree, *tree_inflated);
+                pthread_mutex_unlock(&mutexes_.octomap);
+            }
+        }
+    }
+
+    ROS_DEBUG("Exiting KeyboardTask Thread...");
+}
+
 }  // namespace mapper

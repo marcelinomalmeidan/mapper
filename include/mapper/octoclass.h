@@ -51,6 +51,7 @@ class OctoClass{
     void SetMinRange(const double min_range);  // Min range for mapping
     void SetResolution(const double resolution_in);  // Resolution of the octomap
     void ResetMap();  // Reset the octomap structure
+    void CopyMap(octomap::OcTree &tree, octomap::OcTree &tree_inflated);
     void SetMapInflation(const double inflate_radius);  // Set the inflation radius
     void SetCamFrustum(const double fov,
                        const double aspect_ratio);

@@ -27,7 +27,7 @@ void MapperClass::PclCallback(const sensor_msgs::PointCloud2::ConstPtr &msg,
                               const uint& cam_index) {
     // Structure to include pcl and its frame
     stampedPcl new_pcl;
-    uint max_queue_size = 10;
+    uint max_queue_size = 1;
 
     // Convert message into pcl type
     pcl::PointCloud< pcl::PointXYZ > cloud;
@@ -50,11 +50,14 @@ void MapperClass::PclCallback(const sensor_msgs::PointCloud2::ConstPtr &msg,
         globals_.pcl_queue.push(new_pcl);
         if (globals_.pcl_queue.size() > max_queue_size) {
             globals_.pcl_queue.pop();
+        } else {
+            // signal octomap thread to process new pcl data
+            sem_post(&semaphores_.pcl);
         }
     pthread_mutex_unlock(&mutexes_.point_cloud);
 
-    // signal octomap thread to process new pcl data
-    sem_post(&semaphores_.pcl);
+    // printf("queue_size = %d\n", sem_getvalue());
+    
 }
 
 

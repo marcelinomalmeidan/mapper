@@ -129,6 +129,21 @@ void OctoClass::ResetMap() {
     ROS_DEBUG("Map was reset!");
 }
 
+void OctoClass::CopyMap(octomap::OcTree &tree, octomap::OcTree &tree_inflated) {
+    this->ResetMap();
+
+    for (octomap::OcTree::leaf_iterator it = tree.begin_leafs(),
+                                       end= tree.end_leafs();
+                                       it!= end; ++it) {
+        tree_.updateNode(it.getKey(), it->getValue());
+    }
+    for (octomap::OcTree::leaf_iterator it = tree_inflated.begin_leafs(),
+                                        end= tree_inflated.end_leafs();
+                                        it!= end; ++it) {
+        tree_inflated_.updateNode(it.getKey(), it->getValue());
+    }
+}
+
 void OctoClass::SetOccupancyThreshold(const double occupancy_threshold) {
     tree_.setOccupancyThres(occupancy_threshold);
     tree_inflated_.setOccupancyThres(occupancy_threshold);

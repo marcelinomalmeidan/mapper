@@ -19,6 +19,10 @@
 #ifndef MAPPER_MAPPER_CLASS_H_
 #define MAPPER_MAPPER_CLASS_H_
 
+// Octomap libraries
+#include <octomap/octomap.h>
+#include <octomap/ColorOcTree.h>
+
 // PCL specific includes
 #include <sensor_msgs/PointCloud2.h>
 #include <pcl/point_cloud.h>
@@ -116,6 +120,9 @@ class MapperClass {
   // Thread for getting pcl data and populating the octomap
   void OctomappingTask();
 
+  // Thread for getting keyboard messages
+  void KeyboardTask();
+
  private:
   // Declare global variables (structures defined in structs.h)
   globalVariables globals_;  // These variables are all mutex-protected
@@ -125,6 +132,7 @@ class MapperClass {
   // Thread variables
   std::thread h_haz_tf_thread_, h_perch_tf_thread_, h_body_tf_thread_;
   std::thread h_octo_thread_, h_fade_thread_, h_collision_check_thread_;
+  std::thread h_keyboard_thread_;
   std::vector<std::thread> h_cameras_tf_thread_;
 
   // Subscriber variables
@@ -138,9 +146,12 @@ class MapperClass {
   // Thread rates (hz)
   double tf_update_rate_, fading_memory_update_rate_;
 
-  // // Path planning services
-  ros::ServiceServer RRT_srv, octoRRT_srv, PRM_srv, graph_srv, Astar_srv;
-  ros::ServiceServer newTraj_srv;
+  // Path planning services
+  ros::ServiceServer RRT_srv_, octoRRT_srv_, PRM_srv_, graph_srv_, Astar_srv_;
+  ros::ServiceServer newTraj_srv_;
+
+  // Path strings
+  std::string local_path_;
 
   // Marker publishers
   ros::Publisher sentinel_pub_;

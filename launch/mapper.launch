@@ -15,7 +15,7 @@
     <!-- Set parameters for the mapper -->
     <param name="map_resolution" value="0.15"/>          <!-- meters -->
     <param name="max_range" value="10"/>                 <!-- meters -->
-    <param name="min_range" value="0.50"/>              <!-- meters -->
+    <param name="min_range" value="1.00"/>              <!-- meters -->
 
     <!-- Time to forget information (set as negative if infinity) -->
     <param name="memory_time" value="-30.0"/>           <!-- seconds -->
@@ -45,7 +45,7 @@
     <param name="collision_check_rate" value="0.01"/>         <!-- Hz -->
 
     <!-- Frequency at which tf listeners update tf -->
-    <param name="tf_update_rate" value="10"/>            <!-- Hz -->
+    <param name="tf_update_rate" value="50"/>            <!-- Hz -->
 
     <!-- Service names -->
     <param name="update_resolution" value="mapper/update_resolution"/>
@@ -62,5 +62,10 @@
     <param name="discrete_trajectory_markers" value="mapper/discrete_trajectory_markers"/>
     <param name="collision_detection" value="mapper/collisions"/>
 
+    <param name="local_path" value="$(find mapper)"/>
+
   </node>
+
+  <!-- Launch RVIZ -->
+  <node pkg="rviz" type="rviz" name="rviz" args="-d $(find mapper)/cfg/mapper.rviz"/>
 </launch>
