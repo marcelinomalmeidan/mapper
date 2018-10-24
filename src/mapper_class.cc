@@ -74,6 +74,9 @@ void MapperClass::Initialize(ros::NodeHandle *nh) {
     // nh->getParam("use_haz_cam", use_haz_cam);
     // nh->getParam("use_perch_cam", use_perch_cam);
 
+    // Get namespace of current node
+    nh->getParam("namespace", ns_);
+
     // Load depth camera names
     std::vector<std::string> depth_cam_names;
     std::string depth_cam_prefix, depth_cam_suffix;
@@ -138,10 +141,11 @@ void MapperClass::Initialize(ros::NodeHandle *nh) {
 
     // Camera subscribers and tf threads ----------------------------------------------
     for (uint i = 0; i < depth_cam_names.size(); i++) {
-        std::string cam_topic = depth_cam_prefix + depth_cam_names[i] + depth_cam_suffix;
+        std::string cam_topic = "/" + ns_ + depth_cam_prefix + depth_cam_names[i] + depth_cam_suffix;
         cameras_sub_[i] = nh->subscribe<sensor_msgs::PointCloud2>
               (cam_topic, 10, boost::bind(&MapperClass::PclCallback, this, _1, i));
-        h_cameras_tf_thread_[i] = std::thread(&MapperClass::TfTask, this, inertial_frame_id, depth_cam_names[i], i);
+        h_cameras_tf_thread_[i] = std::thread(&MapperClass::TfTask, this, inertial_frame_id, depth_cam_names[i], ns_, i);
+        ROS_INFO("[mapper] Subscribed to camera topic: %s", cameras_sub_[i].getTopic().c_str());
     }
 
     // Create services ------------------------------------------

@@ -1,6 +1,6 @@
 <launch>
 
-    <arg name="namespace" default="Gazebo"/>
+    <arg name="namespace" default="" />
 
     <group ns="$(arg namespace)">
         <node pkg="mapper"
@@ -75,7 +75,4 @@
         </node>
 
     </group>
-
-  <!-- Launch RVIZ -->
-  <node pkg="rviz" type="rviz" name="rviz" args="-d $(find mapper)/cfg/mapper.rviz"/>
 </launch>

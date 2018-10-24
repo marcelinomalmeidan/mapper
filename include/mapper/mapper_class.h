@@ -112,6 +112,7 @@ class MapperClass {
   void BodyTfTask();
   void TfTask(const std::string& parent_frame,
               const std::string& child_frame,
+              const std::string& child_namespace,
               const uint& index); // Returns the transform from child to parent frame, expressed in parent frame
 
   // Thread for collision checking
@@ -149,6 +150,9 @@ class MapperClass {
   // Path planning services
   ros::ServiceServer RRT_srv_, octoRRT_srv_, PRM_srv_, graph_srv_, Astar_srv_;
   ros::ServiceServer newTraj_srv_;
+
+  // Node namespace
+  std::string ns_;
 
   // Path strings
   std::string local_path_;
