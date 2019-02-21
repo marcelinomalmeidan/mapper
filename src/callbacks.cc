@@ -108,8 +108,8 @@ void MapperClass::SegmentCallback(const mapper::Segment::ConstPtr &msg) {
     // Notify the collision checker to check for collision
     sem_post(&semaphores_.collision_check);
 
-    ros::Duration solver_time = ros::Time::now() - t0;
-    ROS_DEBUG("Time to compute octotraj: %f", solver_time.toSec());
+    // ros::Duration solver_time = ros::Time::now() - t0;
+    // ROS_DEBUG("Time to compute octotraj: %f", solver_time.toSec());
 }
 
 

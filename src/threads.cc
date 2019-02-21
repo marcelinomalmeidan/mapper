@@ -40,8 +40,8 @@ void MapperClass::FadeTask() {
             }
         pthread_mutex_unlock(&mutexes_.octomap);
 
-        ros::Duration fade_time = ros::Time::now() - t0;
-        ROS_DEBUG("Fading memory execution time: %f", fade_time.toSec());
+        // ros::Duration fade_time = ros::Time::now() - t0;
+        // ROS_DEBUG("Fading memory execution time: %f", fade_time.toSec());
 
         loop_rate.sleep();
     }
@@ -225,7 +225,7 @@ void MapperClass::CollisionCheckTask() {
         path_marker_pub_.publish(traj_markers);
         path_marker_pub_.publish(collision_markers);
 
-        ros::Duration solver_time = ros::Time::now() - time_now;
+        // ros::Duration solver_time = ros::Time::now() - time_now;
         // ROS_INFO("Collision check time: %f", solver_time.toSec());
 
         // loop_rate.sleep();
@@ -325,7 +325,7 @@ void MapperClass::OctomappingTask() {
         // Notify the collision checker to check for collision
         sem_post(&semaphores_.collision_check);
 
-        ros::Duration map_time = ros::Time::now() - t0;
+        // ros::Duration map_time = ros::Time::now() - t0;
         // ROS_INFO("Mapping time: %f", map_time.toSec());
     }
 
