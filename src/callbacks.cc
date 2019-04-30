@@ -27,7 +27,7 @@ void MapperClass::PclCallback(const sensor_msgs::PointCloud2::ConstPtr &msg,
                               const uint& cam_index) {
     // Structure to include pcl and its frame
     stampedPcl new_pcl;
-    uint max_queue_size = 1;
+    uint max_queue_size = 2;
 
     // Convert message into pcl type
     pcl::PointCloud< pcl::PointXYZ > cloud;

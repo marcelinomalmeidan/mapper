@@ -1,6 +1,7 @@
 <launch>
 
-    <arg name="namespace" default="Gazebo"/>
+    <arg name="namespace" default="LM_Mapper"/>
+    <arg name="launch_rviz" default="true" />
 
     <group ns="$(arg namespace)">
         <node pkg="mapper"
@@ -13,16 +14,19 @@
 
             <!-- Set of depth camera topics -->
             <param name="depth_cam_prefix" value="/"/>
-            <rosparam param="depth_cam_names"> ["openni_camera_link"] </rosparam>
-            <param name="depth_cam_suffix" value="/depth/points"/>
+            <rosparam param="depth_cam_names"> ["Frodo"] </rosparam>
+            <param name="depth_cam_suffix" value="/camera/depth/color/compressed_points"/>
+
+            <!-- tf frame ID for the cameras above -->
+            <rosparam param="cam_frame_id"> ["/Frodo/camera_depth_optical_frame"] </rosparam>
 
             <!-- Inertial frame name (used for getting tf tree information) -->
             <param name="inertial_frame_id" value="/map"/>
 
             <!-- Set parameters for the mapper -->
-            <param name="map_resolution" value="0.15"/>          <!-- meters -->
-            <param name="max_range" value="10"/>                 <!-- meters -->
-            <param name="min_range" value="1.00"/>              <!-- meters -->
+            <param name="map_resolution" value="0.10"/>          <!-- meters -->
+            <param name="max_range" value="5"/>                 <!-- meters -->
+            <param name="min_range" value="0.5"/>              <!-- meters -->
 
             <!-- Time to forget information (set as negative if infinity) -->
             <param name="memory_time" value="-30.0"/>           <!-- seconds -->
@@ -34,7 +38,7 @@
             <param name="inflate_radius" value="0.25"/>       <!-- meters -->
 
             <!-- Camera FOV (radians): map is only updated within this FOV -->
-            <param name="cam_fov" value="0.90"/>             <!-- radians -->
+            <param name="cam_fov" value="0.80"/>             <!-- radians -->
 
             <!-- Camera's width divided by height (unitless) -->
             <param name="cam_aspect_ratio" value="1.3099"/>
@@ -76,6 +80,9 @@
 
     </group>
 
-  <!-- Launch RVIZ -->
-  <node pkg="rviz" type="rviz" name="rviz" args="-d $(find mapper)/cfg/mapper.rviz"/>
+    <!-- Launch RVIZ -->
+    <group if="$(arg launch_rviz)">
+        <node pkg="rviz" type="rviz" name="rviz" args="-d $(find mapper)/cfg/mapper.rviz"/>
+    </group>
+
 </launch>

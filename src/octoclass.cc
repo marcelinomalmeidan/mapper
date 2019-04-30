@@ -226,7 +226,11 @@ void OctoClass::PclToRayOctomap(const pcl::PointCloud< pcl::PointXYZ > &cloud,
     pcl::PointXYZ point;
     for (uint32_t i = 0; i < height; i++) {
         for (uint32_t j = 0; j < width; j++) {
-            point = cloud.at(j, i);
+            if (cloud.is_dense) {
+                point = cloud.at(j);
+            } else {
+                point = cloud.at(j, i);
+            }
 
             // Check if the point is invalid
             if (std::isnan(point.x) || std::isnan(point.y) || std::isnan(point.z)) {
@@ -257,8 +261,8 @@ void OctoClass::PclToRayOctomap(const pcl::PointCloud< pcl::PointXYZ > &cloud,
                 // insert points in inflated octomap
                 if (range_sqr < max_range_sqr) {
                     central_point = tree_.keyToCoord(k);
-                    for (uint j = 0; j < sphere_.size(); j++) {
-                        cur_point = central_point + octomap::point3d(sphere_[j][0], sphere_[j][1], sphere_[j][2]);
+                    for (uint jj = 0; jj < sphere_.size(); jj++) {
+                        cur_point = central_point + octomap::point3d(sphere_[jj][0], sphere_[jj][1], sphere_[jj][2]);
                         if (!frustum.IsPointWithinFrustum(Eigen::Vector3d(cur_point.x(),
                                                                           cur_point.y(),
                                                                           cur_point.z()))) {

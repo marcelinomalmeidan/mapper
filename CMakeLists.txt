@@ -91,7 +91,7 @@ set( LIBS_TO_LINK
     ${Boost_LIBRARIES}
     ${catkin_LIBRARIES}
     ${OCTOMAP_LIBRARIES}
-)
+) 
 
 add_executable(mapper
   src/mapper.cc

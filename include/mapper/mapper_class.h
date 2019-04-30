@@ -112,7 +112,6 @@ class MapperClass {
   void BodyTfTask();
   void TfTask(const std::string& parent_frame,
               const std::string& child_frame,
-              const std::string& child_namespace,
               const uint& index); // Returns the transform from child to parent frame, expressed in parent frame
 
   // Thread for collision checking

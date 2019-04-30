@@ -66,7 +66,7 @@ class TfClass{
                 listener_.lookupTransform(target_frame, original_frame,
                                          ros::Time(0), transform_);
                 } else {
-                    ROS_WARN("Transform from %s to %s not being published!",
+                    ROS_WARN("[mapper] Transform from %s to %s not being published!",
                              original_frame.c_str(),
                              target_frame.c_str());
                     return false;

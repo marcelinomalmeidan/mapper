@@ -112,17 +112,15 @@ void MapperClass::BodyTfTask() {
 // Thread for updating the tfTree values
 void MapperClass::TfTask(const std::string& parent_frame,
                          const std::string& child_frame,
-                         const std::string& child_namespace,
                          const uint& index) {
-    std::string child_frame_complete = child_namespace + "/" + child_frame;
     ROS_DEBUG("tf Thread from frame `%s` to `%s` started with rate %f: ", 
-              child_frame_complete.c_str(), parent_frame.c_str(), tf_update_rate_);
+              child_frame.c_str(), parent_frame.c_str(), tf_update_rate_);
     tf_listener::TfClass obj_tf;
     ros::Rate loop_rate(tf_update_rate_);
 
     while (ros::ok()) {
         // Get the transform
-        obj_tf.GetTransform(child_frame_complete, parent_frame);
+        obj_tf.GetTransform(child_frame, parent_frame);
 
         pthread_mutex_lock(&mutexes_.tf);
             globals_.tf_cameras2world[index] = obj_tf.transform_;

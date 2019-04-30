@@ -84,9 +84,16 @@ void MapperClass::Initialize(ros::NodeHandle *nh) {
     nh->getParam("depth_cam_prefix", depth_cam_prefix);
     nh->getParam("depth_cam_suffix", depth_cam_suffix);
 
-    // Load inertial frame id
+    // Load frame ids
     std::string inertial_frame_id;
+    std::vector<std::string> cam_frame_id;
     nh->getParam("inertial_frame_id", inertial_frame_id);
+    nh->getParam("cam_frame_id", cam_frame_id);
+
+    // Check if number of cameras added match the number of frame_id for each of them
+    if (depth_cam_names.size() != cam_frame_id.size()) {
+        ROS_ERROR("Number of cameras is different from camera tf frame_id!");
+    }
 
     // Load service names
     std::string resolution_srv_name, memory_time_srv_name;
@@ -133,7 +140,6 @@ void MapperClass::Initialize(ros::NodeHandle *nh) {
     cameras_sub_.resize(depth_cam_names.size());
 
     // threads --------------------------------------------------
-    // h_haz_tf_thread_ = std::thread(&MapperClass::BodyTfTask, this);
     h_octo_thread_ = std::thread(&MapperClass::OctomappingTask, this);
     h_fade_thread_ = std::thread(&MapperClass::FadeTask, this);
     h_collision_check_thread_ = std::thread(&MapperClass::CollisionCheckTask, this);
@@ -141,10 +147,10 @@ void MapperClass::Initialize(ros::NodeHandle *nh) {
 
     // Camera subscribers and tf threads ----------------------------------------------
     for (uint i = 0; i < depth_cam_names.size(); i++) {
-        std::string cam_topic = "/" + ns_ + depth_cam_prefix + depth_cam_names[i] + depth_cam_suffix;
+        std::string cam_topic = depth_cam_prefix + depth_cam_names[i] + depth_cam_suffix;
         cameras_sub_[i] = nh->subscribe<sensor_msgs::PointCloud2>
               (cam_topic, 10, boost::bind(&MapperClass::PclCallback, this, _1, i));
-        h_cameras_tf_thread_[i] = std::thread(&MapperClass::TfTask, this, inertial_frame_id, depth_cam_names[i], ns_, i);
+        h_cameras_tf_thread_[i] = std::thread(&MapperClass::TfTask, this, inertial_frame_id, cam_frame_id[i], i);
         ROS_INFO("[mapper] Subscribed to camera topic: %s", cameras_sub_[i].getTopic().c_str());
     }
 
