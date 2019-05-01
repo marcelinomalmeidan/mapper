@@ -1,0 +1,25 @@
+# max_time: maximum time that RRT will be executed before termination (NOTE: map is not updated while performing path planning!)
+# max_nodes: maximum number of points in the tree before termination
+# steer_param: RRT/RRG steer parameter; in PRM this parametrizes maximum distance connection between nodes
+# grid_resolution: discretize tree nodes in 3d-grid with this given resolution
+# free_space_only: find paths only in areas that are knows to be non-occupied (cannot plan on unnobserved ares when true)
+# origin: initial point (root of the tree)
+# destination: desired destination
+# box_min and box_max: bounds for the planning to happen (sampling occurs only inside the box)
+# prune_result: this prunes unnecessary intermediate waypoints on the path found
+# publish_rviz: when true, publishes graph/tree into Rviz for visualization
+float64 max_time
+int32 max_nodes
+float64 steer_param
+bool free_space_only
+geometry_msgs/Point origin
+geometry_msgs/Point destination
+geometry_msgs/Point box_min
+geometry_msgs/Point box_max
+bool prune_result
+bool publish_rviz
+---
+bool success
+float32 planning_time
+int32 n_tree_nodes
+geometry_msgs/Point[] path

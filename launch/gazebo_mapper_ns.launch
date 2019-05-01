@@ -22,22 +22,22 @@
             <!-- Set parameters for the mapper -->
             <param name="map_resolution" value="0.15"/>          <!-- meters -->
             <param name="max_range" value="10"/>                 <!-- meters -->
-            <param name="min_range" value="1.00"/>              <!-- meters -->
+            <param name="min_range" value="1.00"/>               <!-- meters -->
 
             <!-- Time to forget information (set as negative if infinity) -->
-            <param name="memory_time" value="-30.0"/>           <!-- seconds -->
+            <param name="memory_time" value="-30.0"/>            <!-- seconds -->
 
             <!-- Fading memory thread update rate (Hz) -->
             <param name="fading_memory_update_rate" value="1"/><!-- Hz -->
 
             <!-- Map inflation parameters -->
-            <param name="inflate_radius" value="0.25"/>       <!-- meters -->
+            <param name="inflate_radius" value="0.25"/>        <!-- meters -->
 
             <!-- Camera FOV (radians): map is only updated within this FOV -->
-            <param name="cam_fov" value="0.90"/>             <!-- radians -->
+            <param name="cam_fov" value="0.90"/>               <!-- radians -->
 
             <!-- Camera's width divided by height (unitless) -->
-            <param name="cam_aspect_ratio" value="1.3099"/>
+            <param name="cam_aspect_ratio" value="1.2583"/>
 
             <!-- Map probabilities -->
             <param name="occupancy_threshold" value="0.5"/>     <!-- 0-1 -->
@@ -68,6 +68,7 @@
             <param name="frustum_markers" value="mapper/frustum_markers"/>
             <param name="discrete_trajectory_markers" value="mapper/discrete_trajectory_markers"/>
             <param name="collision_detection" value="mapper/collisions"/>
+            <param name="graph_tree_marker_topic" value="mapper/graph_tree_path_planner"/>
 
             <!-- Path of mapper in computer: used for saving/loading maps -->
             <param name="local_path" value="$(find mapper)"/>

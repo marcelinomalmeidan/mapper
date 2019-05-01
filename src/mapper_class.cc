@@ -107,7 +107,7 @@ void MapperClass::Initialize(ros::NodeHandle *nh) {
     std::string obstacle_markers_topic, free_space_markers_topic;
     std::string inflated_obstacle_markers_topic, inflated_free_space_markers_topic;
     std::string frustum_markers_topic, discrete_trajectory_markers_topic;
-    std::string collision_detection_topic;
+    std::string collision_detection_topic, graph_tree_marker_topic;
     nh->getParam("obstacle_markers", obstacle_markers_topic);
     nh->getParam("free_space_markers", free_space_markers_topic);
     nh->getParam("inflated_obstacle_markers", inflated_obstacle_markers_topic);
@@ -115,6 +115,7 @@ void MapperClass::Initialize(ros::NodeHandle *nh) {
     nh->getParam("frustum_markers", frustum_markers_topic);
     nh->getParam("discrete_trajectory_markers", discrete_trajectory_markers_topic);
     nh->getParam("collision_detection", collision_detection_topic);
+    nh->getParam("graph_tree_marker_topic", graph_tree_marker_topic);
 
     // Load current package path
     nh->getParam("pkg_path", local_path_);
@@ -189,6 +190,8 @@ void MapperClass::Initialize(ros::NodeHandle *nh) {
         nh->advertise<visualization_msgs::MarkerArray>(discrete_trajectory_markers_topic, 10);
     cam_frustum_pub_ =
         nh->advertise<visualization_msgs::Marker>(frustum_markers_topic, 10);
+    graph_tree_marker_pub_ = 
+        nh->advertise<visualization_msgs::Marker>(graph_tree_marker_topic, 10);
 
     // Notify initialization complete
     ROS_DEBUG("Initialization complete");

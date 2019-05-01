@@ -24,7 +24,7 @@ namespace mapper {
 
 // Update resolution of the map
 bool MapperClass::UpdateResolution(mapper::SetFloat::Request &req,
-                                     mapper::SetFloat::Response &res) {
+                                   mapper::SetFloat::Response &res) {
     pthread_mutex_lock(&mutexes_.octomap);
         globals_.octomap.SetResolution(req.data);
     pthread_mutex_unlock(&mutexes_.octomap);
@@ -35,7 +35,7 @@ bool MapperClass::UpdateResolution(mapper::SetFloat::Request &req,
 
 // Update map memory time
 bool MapperClass::UpdateMemoryTime(mapper::SetFloat::Request &req,
-                                     mapper::SetFloat::Response &res) {
+                                   mapper::SetFloat::Response &res) {
     pthread_mutex_lock(&mutexes_.octomap);
         globals_.octomap.SetMemory(req.data);
     pthread_mutex_unlock(&mutexes_.octomap);
@@ -45,7 +45,7 @@ bool MapperClass::UpdateMemoryTime(mapper::SetFloat::Request &req,
 }
 
 bool MapperClass::MapInflation(mapper::SetFloat::Request &req,
-                                 mapper::SetFloat::Response &res) {
+                               mapper::SetFloat::Response &res) {
     pthread_mutex_lock(&mutexes_.octomap);
         globals_.octomap.SetMapInflation(req.data);
     pthread_mutex_unlock(&mutexes_.octomap);
@@ -55,13 +55,37 @@ bool MapperClass::MapInflation(mapper::SetFloat::Request &req,
 }
 
 bool MapperClass::ResetMap(std_srvs::Trigger::Request &req,
-                             std_srvs::Trigger::Response &res) {
+                           std_srvs::Trigger::Response &res) {
     pthread_mutex_lock(&mutexes_.octomap);
         globals_.octomap.ResetMap();
     pthread_mutex_unlock(&mutexes_.octomap);
 
     res.success = true;
     res.message = "Map has been reset!";
+    return true;
+}
+
+bool MapperClass::RRGService(mapper::RRT_RRG_PRM::Request &req,
+                             mapper::RRT_RRG_PRM::Response &res) {
+    std::vector<Eigen::Vector3d> e_path;
+    visualization_msgs::Marker graph_markers;
+    pthread_mutex_lock(&mutexes_.octomap);
+    res.success = globals_.octomap.OctoRRG(
+        msg_conversions::ros_point_to_eigen_vector(req.origin),
+        msg_conversions::ros_point_to_eigen_vector(req.destination),
+        msg_conversions::ros_point_to_eigen_vector(req.box_min),
+        msg_conversions::ros_point_to_eigen_vector(req.box_max),
+        req.max_time, req.max_nodes, req.steer_param, req.free_space_only,
+        req.prune_result, req.publish_rviz, &res.planning_time, &res.n_tree_nodes, 
+        &e_path, &graph_markers);
+    pthread_mutex_unlock(&mutexes_.octomap);
+    for (uint i = 0 ; i < e_path.size(); i++) {
+        res.path.push_back(msg_conversions::eigen_to_ros_point(e_path[i]));
+    }
+
+    if (req.publish_rviz) {
+        graph_tree_marker_pub_.publish(graph_markers);
+    }
     return true;
 }
 

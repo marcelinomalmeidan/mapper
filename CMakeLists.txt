@@ -41,6 +41,7 @@ add_message_files(
 add_service_files(
   FILES
   SetFloat.srv
+  RRT_RRG_PRM.srv
 )
 
 generate_messages(
@@ -105,6 +106,11 @@ add_executable(mapper
   src/msg_conversions.cc
   src/callbacks.cc
   src/services.cc
+  src/graphs.cc
+  src/rrt.cc
+  src/prm.cc
+  src/rrg.cc
+  src/octopath.cc
 )
 target_link_libraries( mapper
     ${LIBS_TO_LINK}

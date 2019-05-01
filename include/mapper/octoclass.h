@@ -30,6 +30,8 @@
 #include <iostream>
 #include "mapper/indexed_octree_key.h"
 #include "mapper/linear_algebra.h"
+#include "mapper/graphs.h"
+#include "mapper/rrg.h"
 
 namespace octoclass {
 
@@ -99,7 +101,7 @@ class OctoClass{
     int CheckOccupancy(const Eigen::Vector3d &p1,
                        const Eigen::Vector3d &p2);  // line collision
 
-    // checkCollision functions: Returns 0 if its free and 1 if its occupied or unknown
+    // checkCollision functions: Returns 0 if it's free and 1 if its occupied or unknown
     bool CheckCollision(const octomap::point3d &p);  // Point collision
     bool CheckCollision(const Eigen::Vector3d &p);  // Point collision
     bool CheckCollision(const octomap::point3d &p1,
@@ -134,6 +136,25 @@ class OctoClass{
     double GetNodeSize(const octomap::OcTreeKey &key);  // Returns size of node. Returns zero if node doesn't exist
     void PrintQueryInfo(octomap::point3d query,
                         octomap::OcTreeNode* node);
+
+    // path planning methods (implementations in octopath.cc)
+    void PathPruning(const std::vector<Eigen::Vector3d> &path,
+                     const bool &free_space_only,
+                     std::vector<Eigen::Vector3d> *compressed_path);
+    bool OctoRRG(const Eigen::Vector3d &p0,
+                 const Eigen::Vector3d &pf,
+                 const Eigen::Vector3d &box_min,
+                 const Eigen::Vector3d &box_max,
+                 const double &max_time,
+                 const int &max_nodes,
+                 const double &steer_param,
+                 const bool &free_space_only,
+                 const bool &prune_result,
+                 const bool &publish_rviz,
+                 float *plan_time,
+                 int *n_tree_nodes,
+                 std::vector<Eigen::Vector3d> *path,
+                 visualization_msgs::Marker *graph_markers);
 
  private:
     int tree_depth_;

@@ -39,8 +39,9 @@
 #include <std_srvs/Trigger.h>
 #include <tf/transform_broadcaster.h>
 
-// // Service messages
+// Service messages
 #include <mapper/SetFloat.h>
+#include <mapper/RRT_RRG_PRM.h>
 
 // C++ libraries
 #include <fstream>
@@ -76,7 +77,7 @@ class MapperClass {
 
 
  protected:
-  // Callbacks (see callbacks.cpp for implementation) ----------------
+  // Callbacks (see callbacks.cc for implementation) ----------------
   // Callback for handling incoming point cloud messages
   void PclCallback(const sensor_msgs::PointCloud2::ConstPtr &msg,
                    const uint& cam_index);
@@ -85,7 +86,7 @@ class MapperClass {
   void SegmentCallback(const mapper::Segment::ConstPtr &msg);
 
 
-  // Services (see services.cpp for implementation) -----------------
+  // Services (see services.cc for implementation) -----------------
   // Update resolution of the map
   bool UpdateResolution(mapper::SetFloat::Request &req,
                         mapper::SetFloat::Response &res);
@@ -102,7 +103,11 @@ class MapperClass {
   bool ResetMap(std_srvs::Trigger::Request &req,
                 std_srvs::Trigger::Response &res);
 
-  // Threads (see threads.cpp for implementation) -----------------
+  // RRG path planning
+  bool RRGService(mapper::RRT_RRG_PRM::Request &req,
+                  mapper::RRT_RRG_PRM::Response &res);
+
+  // Threads (see threads.cc for implementation) -----------------
   // Thread for fading memory of the octomap
   void FadeTask();
 
@@ -165,6 +170,9 @@ class MapperClass {
   ros::Publisher path_marker_pub_;
   ros::Publisher cam_frustum_pub_;
   ros::Publisher map_keep_in_out_pub_;
+
+  // Path planning publishers
+  ros::Publisher graph_tree_marker_pub_;
 };
 
 }  // namespace mapper

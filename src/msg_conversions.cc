@@ -45,6 +45,13 @@ geometry_msgs::Point eigen_to_ros_point(const Eigen::Vector3d & v) {
   return n;
 }
 
+void eigen_to_ros_point(const Eigen::Vector3d &eigen_pt,
+                        geometry_msgs::Point *ros_pt) {
+  ros_pt->x = eigen_pt[0];
+  ros_pt->y = eigen_pt[1];
+  ros_pt->z = eigen_pt[2];
+}
+
 Eigen::Quaterniond ros_to_eigen_quat(const geometry_msgs::Quaternion & q) {
   return Eigen::Quaterniond(q.w, q.x, q.y, q.z);
 }

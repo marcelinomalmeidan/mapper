@@ -72,6 +72,7 @@
             <param name="frustum_markers" value="mapper/frustum_markers"/>
             <param name="discrete_trajectory_markers" value="mapper/discrete_trajectory_markers"/>
             <param name="collision_detection" value="mapper/collisions"/>
+            <param name="graph_tree_marker_topic" value="mapper/graph_tree_path_planner"/>
 
             <!-- Path of mapper in computer: used for saving/loading maps -->
             <param name="local_path" value="$(find mapper)"/>
