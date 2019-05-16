@@ -98,38 +98,38 @@ bool OctoClass::OctoRRG(const Eigen::Vector3d &p0,
 			            const bool &prune_result,
 			            const bool &publish_rviz,
 			            float *plan_time,
-			            int *n_tree_nodes,
+			            int *n_rrg_nodes,
 			            std::vector<Eigen::Vector3d> *path,
                         visualization_msgs::Marker *graph_markers) {
     // Check whether initial and final points are within box
     if ((p0[0] < box_min[0]) || (p0[1] < box_min[1]) || (p0[2] < box_min[2]) ||
         (p0[0] > box_max[0]) || (p0[1] > box_max[1]) || (p0[2] > box_max[2])) {
-        ROS_INFO("[mapper] RRG Error: Initial point not within box!");
+        ROS_WARN("[mapper] RRG Error: Initial point not within box!");
         return false;
     }
     if ((pf[0] < box_min[0]) || (pf[1] < box_min[1]) || (pf[2] < box_min[2]) ||
         (pf[0] > box_max[0]) || (pf[1] > box_max[1]) || (pf[2] > box_max[2])) {
-        ROS_INFO("[mapper] RRG Error: Final point not within box!");
+        ROS_WARN("[mapper] RRG Error: Final point not within box!");
         return false;
     }
 
     // Check whether the initial and final points are colliding
     if (free_space_only) {
         if (CheckCollision(p0)) {
-            ROS_INFO("[mapper] RRG Error: Initial point is colliding!");
+            ROS_WARN("[mapper] RRG Error: Initial point is colliding!");
             return false;
         }
         if (CheckCollision(pf)) {
-            ROS_INFO("[mapper] RRG Error: Final point is colliding!");
+            ROS_WARN("[mapper] RRG Error: Final point is colliding!");
             return false;
         }
     } else {
         if (CheckOccupancy(p0) == 1) {
-            ROS_INFO("[mapper] RRG Error: Initial point is colliding!");
+            ROS_WARN("[mapper] RRG Error: Initial point is colliding!");
             return false;
         }
         if (CheckOccupancy(pf) == 1) {
-            ROS_INFO("[mapper] RRG Error: Final point is colliding!");
+            ROS_WARN("[mapper] RRG Error: Final point is colliding!");
             return false;
         }
     }
@@ -280,7 +280,7 @@ bool OctoClass::OctoRRG(const Eigen::Vector3d &p0,
     }
 
     // Populate time and nodes
-    *n_tree_nodes = n_nodes;
+    *n_rrg_nodes = n_nodes;
     *plan_time = (ros::Time::now() - t0).toSec();
 
     // ROS_INFO("[mapper] nNodes: %d", static_cast<int>(obj_rrg.rrgraph_.n_nodes_));

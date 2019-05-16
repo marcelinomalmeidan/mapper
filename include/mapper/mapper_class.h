@@ -152,8 +152,7 @@ class MapperClass {
   double tf_update_rate_, fading_memory_update_rate_;
 
   // Path planning services
-  ros::ServiceServer RRT_srv_, octoRRT_srv_, PRM_srv_, graph_srv_, Astar_srv_;
-  ros::ServiceServer newTraj_srv_;
+  ros::ServiceServer rrg_srv_;
 
   // Node namespace
   std::string ns_;

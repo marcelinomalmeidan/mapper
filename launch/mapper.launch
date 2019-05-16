@@ -35,7 +35,7 @@
             <param name="fading_memory_update_rate" value="1"/><!-- Hz -->
 
             <!-- Map inflation parameters -->
-            <param name="inflate_radius" value="0.25"/>       <!-- meters -->
+            <param name="inflate_radius" value="0.40"/>       <!-- meters -->
 
             <!-- Camera FOV (radians): map is only updated within this FOV -->
             <param name="cam_fov" value="0.80"/>             <!-- radians -->
@@ -59,20 +59,21 @@
             <param name="tf_update_rate" value="50"/>            <!-- Hz -->
 
             <!-- Service names -->
-            <param name="update_resolution" value="mapper/update_resolution"/>
-            <param name="update_memory_time" value="mapper/update_memory_time"/>
-            <param name="update_inflation_radius" value="mapper/update_inflation_radius"/>
-            <param name="reset_map" value="mapper/reset_map"/>
+            <param name="update_resolution" value="update_resolution"/>
+            <param name="update_memory_time" value="update_memory_time"/>
+            <param name="update_inflation_radius" value="update_inflation_radius"/>
+            <param name="reset_map" value="reset_map"/>
+            <param name="rrg_service" value="rrg"/>
 
             <!-- Publisher names -->
-            <param name="obstacle_markers" value="mapper/obstacle_markers"/>
-            <param name="free_space_markers" value="mapper/free_space_markers"/>
-            <param name="inflated_obstacle_markers" value="mapper/inflated_obstacle_markers"/>
-            <param name="inflated_free_space_markers" value="mapper/inflated_free_space_markers"/>
-            <param name="frustum_markers" value="mapper/frustum_markers"/>
-            <param name="discrete_trajectory_markers" value="mapper/discrete_trajectory_markers"/>
-            <param name="collision_detection" value="mapper/collisions"/>
-            <param name="graph_tree_marker_topic" value="mapper/graph_tree_path_planner"/>
+            <param name="obstacle_markers" value="obstacle_markers"/>
+            <param name="free_space_markers" value="free_space_markers"/>
+            <param name="inflated_obstacle_markers" value="inflated_obstacle_markers"/>
+            <param name="inflated_free_space_markers" value="inflated_free_space_markers"/>
+            <param name="frustum_markers" value="frustum_markers"/>
+            <param name="discrete_trajectory_markers" value="discrete_trajectory_markers"/>
+            <param name="collision_detection" value="collisions"/>
+            <param name="graph_tree_marker_topic" value="graph_tree_path_planner"/>
 
             <!-- Path of mapper in computer: used for saving/loading maps -->
             <param name="local_path" value="$(find mapper)"/>

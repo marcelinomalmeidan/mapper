@@ -76,7 +76,7 @@ bool MapperClass::RRGService(mapper::RRT_RRG_PRM::Request &req,
         msg_conversions::ros_point_to_eigen_vector(req.box_min),
         msg_conversions::ros_point_to_eigen_vector(req.box_max),
         req.max_time, req.max_nodes, req.steer_param, req.free_space_only,
-        req.prune_result, req.publish_rviz, &res.planning_time, &res.n_tree_nodes, 
+        req.prune_result, req.publish_rviz, &res.planning_time, &res.n_nodes, 
         &e_path, &graph_markers);
     pthread_mutex_unlock(&mutexes_.octomap);
     for (uint i = 0 ; i < e_path.size(); i++) {

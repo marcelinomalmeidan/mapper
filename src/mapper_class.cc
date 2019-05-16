@@ -97,11 +97,12 @@ void MapperClass::Initialize(ros::NodeHandle *nh) {
 
     // Load service names
     std::string resolution_srv_name, memory_time_srv_name;
-    std::string map_inflation_srv_name, reset_map_srv_name;
+    std::string map_inflation_srv_name, reset_map_srv_name, rrg_srv_name;
     nh->getParam("update_resolution", resolution_srv_name);
     nh->getParam("update_memory_time", memory_time_srv_name);
     nh->getParam("update_inflation_radius", map_inflation_srv_name);
     nh->getParam("reset_map", reset_map_srv_name);
+    nh->getParam("rrg_service", rrg_srv_name);
 
     // Load publisher names
     std::string obstacle_markers_topic, free_space_markers_topic;
@@ -144,7 +145,7 @@ void MapperClass::Initialize(ros::NodeHandle *nh) {
     h_octo_thread_ = std::thread(&MapperClass::OctomappingTask, this);
     h_fade_thread_ = std::thread(&MapperClass::FadeTask, this);
     h_collision_check_thread_ = std::thread(&MapperClass::CollisionCheckTask, this);
-    h_keyboard_thread_ = std::thread(&MapperClass::KeyboardTask, this);
+    // h_keyboard_thread_ = std::thread(&MapperClass::KeyboardTask, this);
 
     // Camera subscribers and tf threads ----------------------------------------------
     for (uint i = 0; i < depth_cam_names.size(); i++) {
@@ -164,6 +165,8 @@ void MapperClass::Initialize(ros::NodeHandle *nh) {
         map_inflation_srv_name, &MapperClass::MapInflation, this);
     reset_map_srv_ = nh->advertiseService(
         reset_map_srv_name, &MapperClass::ResetMap, this);
+    rrg_srv_ = nh->advertiseService(
+        rrg_srv_name, &MapperClass::RRGService, this);
 
     // if (use_haz_cam) {
     //     std::string cam = TOPIC_HARDWARE_NAME_HAZ_CAM;

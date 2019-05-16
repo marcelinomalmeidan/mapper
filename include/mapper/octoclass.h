@@ -152,7 +152,7 @@ class OctoClass{
                  const bool &prune_result,
                  const bool &publish_rviz,
                  float *plan_time,
-                 int *n_tree_nodes,
+                 int *n_rrg_nodes,
                  std::vector<Eigen::Vector3d> *path,
                  visualization_msgs::Marker *graph_markers);
 
