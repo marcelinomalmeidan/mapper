@@ -54,7 +54,8 @@ class OctoClass{
     void SetResolution(const double resolution_in);  // Resolution of the octomap
     void ResetMap();  // Reset the octomap structure
     void CopyMap(octomap::OcTree &tree, octomap::OcTree &tree_inflated);
-    void SetMapInflation(const double inflate_radius);  // Set the inflation radius
+    void SetMapInflation(const double &inflate_radius);  // Set the inflation radius (same for xyz)
+    void SetMapInflation(const double &inflate_radius_xy, const double &inflate_radius_z);  // Set inflation radius (xy and z different)
     void SetCamFrustum(const double fov,
                        const double aspect_ratio);
     void SetOccupancyThreshold(const double occupancy_threshold);
@@ -160,7 +161,7 @@ class OctoClass{
     int tree_depth_;
     double resolution_;
     double max_range_, min_range_;
-    float inflate_radius_;
+    float inflate_radius_xy_, inflate_radius_z_;
     std::vector<Eigen::Vector3d> sphere_;  // Discretized sphere used in map inflation
     std::vector<double> depth_volumes_;     // Volume per depth in the tree
 

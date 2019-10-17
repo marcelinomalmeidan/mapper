@@ -63,58 +63,43 @@ void OctoClass::SetResolution(const double resolution_in) {
         // ROS_INFO("Volume for depth %d: %f", int(i), depth_volumes_[i]);
     }
 
-    sphere_.clear();
-    static Eigen::Vector3d xyz;
-    // if (inflateMap) {
-    const int max_xyz = static_cast<int>(round(inflate_radius_/resolution_));
-    const float max_dist = inflate_radius_*inflate_radius_;
-    static float d_origin;
-    for (int x = -max_xyz; x <= max_xyz; x++) {
-        for (int y = -max_xyz; y <= max_xyz; y++) {
-            for (int z = -max_xyz; z <= max_xyz; z++) {
-                xyz << x*resolution_, y*resolution_, z*resolution_;
-
-                d_origin = xyz.dot(xyz);  // distance from origin squared
-                if (d_origin <= max_dist) {
-                    sphere_.push_back(xyz);
-                }
-            }
-        }
-    }
-    // }
+    this->SetMapInflation(inflate_radius_xy_, inflate_radius_z_);
 
     ROS_DEBUG("Map resolution: %f meters", resolution_);
 }
 
-void OctoClass::SetMapInflation(const double inflate_radius) {
-    inflate_radius_ = inflate_radius;
+void OctoClass::SetMapInflation(const double &inflate_radius_xy, const double &inflate_radius_z) {
+    inflate_radius_xy_ = inflate_radius_xy;
+    inflate_radius_z_ = inflate_radius_z;
 
     this->ResetMap();
 
     sphere_.clear();
-    static Eigen::Vector3d xyz;
-    // if (inflateMap) {
-    ROS_DEBUG("The map is being inflated by a radius of %f!", inflate_radius_);
-    const int max_xyz = static_cast<int>(round(inflate_radius_/resolution_));
-    const float max_dist = inflate_radius_*inflate_radius_;
+    static Eigen::Vector3d xyz, xyz_normalized;
+    ROS_DEBUG("The map is being inflated by a radius of %f in XY direction!", inflate_radius_xy_);
+    ROS_DEBUG("The map is being inflated by a radius of %f in Z direction!", inflate_radius_z_);
+    const int max_xy = static_cast<int>(round(inflate_radius_xy/resolution_));
+    const int max_z = static_cast<int>(round(inflate_radius_z/resolution_));
     static float d_origin;
-    for (int x = -max_xyz; x <= max_xyz; x++) {
-        for (int y = -max_xyz; y <= max_xyz; y++) {
-            for (int z = -max_xyz; z <= max_xyz; z++) {
+    for (int x = -max_xy; x <= max_xy; x++) {
+        for (int y = -max_xy; y <= max_xy; y++) {
+            for (int z = -max_z; z <= max_z; z++) {
+                xyz_normalized << x*resolution_/inflate_radius_xy,
+                                  y*resolution_/inflate_radius_xy,
+                                  z*resolution_/inflate_radius_z;
                 xyz << x*resolution_, y*resolution_, z*resolution_;
 
-                d_origin = xyz.dot(xyz);  // distance from origin squared
-                if (d_origin <= max_dist) {
+                // Check if point is inside ellipse using ellipse equation
+                if (xyz_normalized.dot(xyz_normalized) <= 1.0001) {
                     sphere_.push_back(xyz);
                 }
             }
         }
     }
-    // } else {
-    //     ROS_INFO("The map is not currently being inflated!");
-    //     XYZf << 0.0, 0.0, 0.0;
-    //     sphere.push_back(XYZf);
-    // }
+}
+
+void OctoClass::SetMapInflation(const double &inflate_radius) {
+    this->SetMapInflation(inflate_radius, inflate_radius);
 }
 
 void OctoClass::SetCamFrustum(const double fov,

@@ -49,7 +49,8 @@ MapperClass::~MapperClass() {
 void MapperClass::Initialize(ros::NodeHandle *nh) {
 
     // Load parameters
-    double map_resolution, memory_time, max_range, min_range, inflate_radius;
+    double map_resolution, memory_time, max_range, min_range;
+    double inflate_radius_xy, inflate_radius_z;
     double cam_fov, aspect_ratio;
     double occupancy_threshold, probability_hit, probability_miss;
     double clamping_threshold_max, clamping_threshold_min;
@@ -59,7 +60,8 @@ void MapperClass::Initialize(ros::NodeHandle *nh) {
     nh->getParam("max_range", max_range);
     nh->getParam("min_range", min_range);
     nh->getParam("memory_time", memory_time);
-    nh->getParam("inflate_radius", inflate_radius);
+    nh->getParam("inflate_radius_xy", inflate_radius_xy);
+    nh->getParam("inflate_radius_z", inflate_radius_z);
     nh->getParam("cam_fov", cam_fov);
     nh->getParam("cam_aspect_ratio", aspect_ratio);
     nh->getParam("occupancy_threshold", occupancy_threshold);
@@ -126,7 +128,7 @@ void MapperClass::Initialize(ros::NodeHandle *nh) {
     globals_.octomap.SetMaxRange(max_range);
     globals_.octomap.SetMinRange(min_range);
     globals_.octomap.SetMemory(memory_time);
-    globals_.octomap.SetMapInflation(inflate_radius);
+    globals_.octomap.SetMapInflation(inflate_radius_xy, inflate_radius_z);
     globals_.octomap.SetCamFrustum(cam_fov, aspect_ratio);
     globals_.octomap.SetOccupancyThreshold(occupancy_threshold);
     globals_.octomap.SetHitMissProbabilities(probability_hit, probability_miss);
