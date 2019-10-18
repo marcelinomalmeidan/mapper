@@ -27,6 +27,8 @@ Panels:
     Name: Time
     SyncMode: 0
     SyncSource: Image
+Toolbars:
+  toolButtonStyle: 2
 Visualization Manager:
   Class: ""
   Displays:
@@ -69,17 +71,17 @@ Visualization Manager:
       Marker Topic: /LM_Mapper/mapper_node/obstacle_markers
       Name: Obstacles
       Namespaces:
-        {}
+        obstacleMap: true
       Queue Size: 100
       Value: true
     - Class: rviz/MarkerArray
-      Enabled: true
+      Enabled: false
       Marker Topic: /LM_Mapper/mapper_node/inflated_obstacle_markers
       Name: ObstaclesInflated
       Namespaces:
         {}
       Queue Size: 100
-      Value: true
+      Value: false
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
@@ -112,7 +114,7 @@ Visualization Manager:
       Value: true
     - Class: rviz/Image
       Enabled: true
-      Image Topic: /Frodo/camera/color/image_raw
+      Image Topic: /Sauron/camera/color/image_raw
       Max Value: 1
       Median window: 5
       Min Value: 0
@@ -127,21 +129,49 @@ Visualization Manager:
       Frame Timeout: 15
       Frames:
         All Enabled: false
-        Bilbo/base_link:
+        Sauron/base_link:
           Value: true
-        Frodo/base_link:
+        Sauron/camera_aligned_depth_to_color_frame:
           Value: true
-        Frodo/camera_aligned_depth_to_color_frame:
+        Sauron/camera_color_frame:
           Value: true
-        Frodo/camera_color_frame:
+        Sauron/camera_color_optical_frame:
           Value: true
-        Frodo/camera_color_optical_frame:
+        Sauron/camera_depth_frame:
           Value: true
-        Frodo/camera_depth_frame:
+        Sauron/camera_depth_optical_frame:
           Value: true
-        Frodo/camera_depth_optical_frame:
+        Sauron/camera_link:
           Value: true
-        Frodo/camera_link:
+        Sauron/t265_accel_frame:
+          Value: true
+        Sauron/t265_accel_optical_frame:
+          Value: true
+        Sauron/t265_fisheye1_frame:
+          Value: true
+        Sauron/t265_fisheye1_optical_frame:
+          Value: true
+        Sauron/t265_fisheye2_frame:
+          Value: true
+        Sauron/t265_fisheye2_optical_frame:
+          Value: true
+        Sauron/t265_gyro_frame:
+          Value: true
+        Sauron/t265_gyro_optical_frame:
+          Value: true
+        Sauron/t265_link:
+          Value: true
+        Sauron/t265_odom_frame:
+          Value: true
+        Sauron/t265_pose_frame:
+          Value: true
+        fcu:
+          Value: true
+        fcu_frd:
+          Value: true
+        local_origin:
+          Value: true
+        local_origin_ned:
           Value: true
         map:
           Value: true
@@ -151,19 +181,40 @@ Visualization Manager:
       Show Axes: true
       Show Names: false
       Tree:
-        map:
-          Bilbo/base_link:
+        local_origin:
+          local_origin_ned:
+            Sauron/t265_odom_frame:
+              Sauron/t265_pose_frame:
+                Sauron/base_link:
+                  {}
+                Sauron/camera_link:
+                  Sauron/camera_aligned_depth_to_color_frame:
+                    Sauron/camera_color_optical_frame:
+                      {}
+                  Sauron/camera_color_frame:
+                    {}
+                  Sauron/camera_depth_frame:
+                    Sauron/camera_depth_optical_frame:
+                      {}
+                Sauron/t265_link:
+                  Sauron/t265_accel_frame:
+                    Sauron/t265_accel_optical_frame:
+                      {}
+                  Sauron/t265_fisheye1_frame:
+                    Sauron/t265_fisheye1_optical_frame:
+                      {}
+                  Sauron/t265_fisheye2_frame:
+                    Sauron/t265_fisheye2_optical_frame:
+                      {}
+                  Sauron/t265_gyro_frame:
+                    Sauron/t265_gyro_optical_frame:
+                      {}
+            fcu:
+              {}
+            fcu_frd:
+              {}
+          map:
             {}
-          Frodo/base_link:
-            Frodo/camera_link:
-              Frodo/camera_aligned_depth_to_color_frame:
-                Frodo/camera_color_optical_frame:
-                  {}
-              Frodo/camera_color_frame:
-                {}
-              Frodo/camera_depth_frame:
-                Frodo/camera_depth_optical_frame:
-                  {}
       Update Interval: 0
       Value: true
   Enabled: true
@@ -191,25 +242,25 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 4.79966354
+      Distance: 5.39538717
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.0599999987
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 0.136677891
-        Y: 1.03494024
-        Z: 1.67750549
+        X: 0.359931946
+        Y: -0.346517324
+        Z: 1.19056547
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.0500000007
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.00999999978
-      Pitch: 0.41520384
+      Pitch: 0.245204315
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 2.40861821
+      Yaw: 3.60362124
     Saved: ~
 Window Geometry:
   Displays:

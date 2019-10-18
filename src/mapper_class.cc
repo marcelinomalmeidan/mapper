@@ -55,7 +55,7 @@ void MapperClass::Initialize(ros::NodeHandle *nh) {
     double occupancy_threshold, probability_hit, probability_miss;
     double clamping_threshold_max, clamping_threshold_min;
     double traj_resolution, compression_max_dev;
-    bool use_haz_cam, use_perch_cam;
+    bool process_pcl_at_startup;
     nh->getParam("map_resolution", map_resolution);
     nh->getParam("max_range", max_range);
     nh->getParam("min_range", min_range);
@@ -100,10 +100,14 @@ void MapperClass::Initialize(ros::NodeHandle *nh) {
     // Load service names
     std::string resolution_srv_name, memory_time_srv_name;
     std::string map_inflation_srv_name, reset_map_srv_name, rrg_srv_name;
+    std::string save_map_srv_name, load_map_srv_name, process_pcl_srv_name;
     nh->getParam("update_resolution", resolution_srv_name);
     nh->getParam("update_memory_time", memory_time_srv_name);
     nh->getParam("update_inflation_radius", map_inflation_srv_name);
     nh->getParam("reset_map", reset_map_srv_name);
+    nh->getParam("save_map", save_map_srv_name);
+    nh->getParam("load_map", load_map_srv_name);
+    nh->getParam("process_pcl", process_pcl_srv_name);
     nh->getParam("rrg_service", rrg_srv_name);
 
     // Load publisher names
@@ -121,7 +125,13 @@ void MapperClass::Initialize(ros::NodeHandle *nh) {
     nh->getParam("graph_tree_marker_topic", graph_tree_marker_topic);
 
     // Load current package path
-    nh->getParam("pkg_path", local_path_);
+    nh->getParam("local_path", local_path_);
+
+    // Parameter defining whether or not the map processes point clouds at startup
+    nh->getParam("process_pcl_at_startup", process_pcl_at_startup);
+
+    // Set mapper to update on startup
+    globals_.update_map = process_pcl_at_startup;
 
     // update tree parameters
     globals_.octomap.SetResolution(map_resolution);
@@ -167,6 +177,12 @@ void MapperClass::Initialize(ros::NodeHandle *nh) {
         map_inflation_srv_name, &MapperClass::MapInflation, this);
     reset_map_srv_ = nh->advertiseService(
         reset_map_srv_name, &MapperClass::ResetMap, this);
+    save_map_srv_ = nh->advertiseService(
+        save_map_srv_name, &MapperClass::SaveMap, this);
+    load_map_srv_ = nh->advertiseService(
+        load_map_srv_name, &MapperClass::LoadMap, this);
+    process_pcl_srv_ = nh->advertiseService(
+        process_pcl_srv_name, &MapperClass::OctomapProcessPCL, this);
     rrg_srv_ = nh->advertiseService(
         rrg_srv_name, &MapperClass::RRGService, this);
 

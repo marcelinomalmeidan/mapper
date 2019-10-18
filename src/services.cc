@@ -65,6 +65,43 @@ bool MapperClass::ResetMap(std_srvs::Trigger::Request &req,
     return true;
 }
 
+bool MapperClass::SaveMap(std_srvs::Trigger::Request &req,
+                          std_srvs::Trigger::Response &res) {
+    std::string filename1 = local_path_ + "/maps/octomap.ot";
+    std::string filename2 = local_path_ + "/maps/octomap_inflated.ot";
+    pthread_mutex_lock(&mutexes_.octomap);
+        globals_.octomap.tree_.write(filename1);
+        globals_.octomap.tree_inflated_.write(filename2);
+    pthread_mutex_unlock(&mutexes_.octomap);
+    
+    ROS_INFO("Maps saved in:\n%s \n%s\n", filename1.c_str(), filename2.c_str());
+}
+
+bool MapperClass::LoadMap(std_srvs::Trigger::Request &req,
+                          std_srvs::Trigger::Response &res) {
+    std::string filename1 = local_path_ + "/maps/octomap.ot";
+    std::string filename2 = local_path_ + "/maps/octomap_inflated.ot";
+    octomap::OcTree* tree = dynamic_cast<octomap::OcTree*>(octomap::OcTree::read(filename1));
+    octomap::OcTree* tree_inflated = dynamic_cast<octomap::OcTree*>(octomap::OcTree::read(filename2));
+    if (tree && tree_inflated) {
+        pthread_mutex_lock(&mutexes_.octomap);
+            globals_.octomap.CopyMap(*tree, *tree_inflated);
+        pthread_mutex_unlock(&mutexes_.octomap);
+    }
+}
+
+bool MapperClass::OctomapProcessPCL(std_srvs::SetBool::Request &req,
+                                    std_srvs::SetBool::Response &res) {
+    pthread_mutex_lock(&mutexes_.update_map);
+        globals_.update_map = req.data;
+    pthread_mutex_unlock(&mutexes_.update_map);
+    if (req.data) {
+        ROS_INFO("PCL data will be processed!");
+    } else {
+        ROS_INFO("PCL data will not be processed!");
+    }
+}
+
 bool MapperClass::RRGService(mapper::RRT_RRG_PRM::Request &req,
                              mapper::RRT_RRG_PRM::Response &res) {
     std::vector<Eigen::Vector3d> e_path;

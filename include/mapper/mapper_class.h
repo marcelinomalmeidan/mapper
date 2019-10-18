@@ -37,6 +37,7 @@
 #include <tf/transform_listener.h>
 #include <visualization_msgs/MarkerArray.h>
 #include <std_srvs/Trigger.h>
+#include <std_srvs/SetBool.h>
 #include <tf/transform_broadcaster.h>
 
 // Service messages
@@ -103,6 +104,18 @@ class MapperClass {
   bool ResetMap(std_srvs::Trigger::Request &req,
                 std_srvs::Trigger::Response &res);
 
+  // Save octomap
+  bool SaveMap(std_srvs::Trigger::Request &req,
+               std_srvs::Trigger::Response &res);
+
+  // Load octomap
+  bool LoadMap(std_srvs::Trigger::Request &req,
+               std_srvs::Trigger::Response &res);
+
+  // Process PCL data or not
+  bool OctomapProcessPCL(std_srvs::SetBool::Request &req,
+                         std_srvs::SetBool::Response &res);
+
   // RRG path planning
   bool RRGService(mapper::RRT_RRG_PRM::Request &req,
                   mapper::RRT_RRG_PRM::Response &res);
@@ -147,6 +160,7 @@ class MapperClass {
   // Octomap services
   ros::ServiceServer resolution_srv_, memory_time_srv_;
   ros::ServiceServer map_inflation_srv_, reset_map_srv_;
+  ros::ServiceServer save_map_srv_, load_map_srv_, process_pcl_srv_;
 
   // Thread rates (hz)
   double tf_update_rate_, fading_memory_update_rate_;

@@ -50,6 +50,7 @@ struct globalVariables {
     octoclass::OctoClass octomap = octoclass::OctoClass(0.05);
     sampled_traj::SampledTrajectory3D sampled_traj;
     std::queue<stampedPcl> pcl_queue;
+    bool update_map;
 };
 
 class mutexStruct {
@@ -58,6 +59,7 @@ class mutexStruct {
     pthread_mutex_t tf;
     pthread_mutex_t octomap;
     pthread_mutex_t point_cloud;
+    pthread_mutex_t update_map;
 
     // Methods
     mutexStruct() {
@@ -65,12 +67,14 @@ class mutexStruct {
         pthread_mutex_init(&tf, NULL);
         pthread_mutex_init(&octomap, NULL);
         pthread_mutex_init(&point_cloud, NULL);
+        pthread_mutex_init(&update_map, NULL);
     }
     void destroy() {
         pthread_mutex_destroy(&sampled_traj);
         pthread_mutex_destroy(&tf);
         pthread_mutex_destroy(&octomap);
         pthread_mutex_destroy(&point_cloud);
+        pthread_mutex_destroy(&update_map);
     }
 };
 

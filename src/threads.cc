@@ -124,6 +124,10 @@ void MapperClass::TfTask(const std::string& parent_frame,
 
         pthread_mutex_lock(&mutexes_.tf);
             globals_.tf_cameras2world[index] = obj_tf.transform_;
+            // tf::Vector3 v = globals_.tf_cameras2world[index].getOrigin();
+            // std::cout << "- Translation: [" << v.getX() << ", "
+            //                                 << v.getY() << ", "
+            //                                 << v.getZ() << "]" << std::endl;
         pthread_mutex_unlock(&mutexes_.tf);
         loop_rate.sleep();
     }
@@ -259,22 +263,35 @@ void MapperClass::OctomappingTask() {
             continue;
         }
 
-        // Transform pcl into world frame
+        // Get camera transform
         tf::Quaternion q = tf_cam2world.getRotation();
         tf::Vector3 v = tf_cam2world.getOrigin();
         Eigen::Affine3d transform = Eigen::Affine3d::Identity();
         transform.translation() << v.getX(), v.getY(), v.getZ();
         transform.rotate(Eigen::Quaterniond(q.getW(), q.getX(), q.getY(), q.getZ()));
-        pcl::transformPointCloud(point_cloud, pcl_world, transform);
 
-        // Save into octomap
+        // Update frustum orientation
         algebra_3d::FrustumPlanes world_frustum;
         pthread_mutex_lock(&mutexes_.octomap);
             globals_.octomap.cam_frustum_.TransformFrustum(transform, &world_frustum);
-            globals_.octomap.PclToRayOctomap(pcl_world, tf_cam2world, world_frustum);
-            globals_.octomap.tree_.prune();   // prune the tree before visualizing
-            // globals_.octomap.tree.writeBinary("simple_tree.bt");
         pthread_mutex_unlock(&mutexes_.octomap);
+
+        // Should we process PCL data?
+        pthread_mutex_lock(&mutexes_.update_map);
+            const bool update_map = globals_.update_map;
+        pthread_mutex_unlock(&mutexes_.update_map);
+
+        // Process PCL data
+        if (update_map) {
+            // Transform pcl into world frame
+            pcl::transformPointCloud(point_cloud, pcl_world, transform);
+
+            // Save into octomap
+            pthread_mutex_lock(&mutexes_.octomap);
+                globals_.octomap.PclToRayOctomap(pcl_world, tf_cam2world, world_frustum);
+                globals_.octomap.tree_.prune();   // prune the tree before visualizing
+            pthread_mutex_unlock(&mutexes_.octomap);
+        }
 
 
         // Publish visualization markers iff at least one node is subscribed to it
