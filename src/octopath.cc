@@ -113,6 +113,9 @@ bool OctoClass::OctoRRG(const Eigen::Vector3d &p0,
         return false;
     }
 
+    ROS_INFO("[mapper] Finding RRG path from [%.2f %.2f %.2f] to [%.2f %.2f %.2f]",
+             p0[0], p0[1], p0[2], pf[0], pf[1], pf[2]);
+
     // Check whether the initial and final points are colliding
     if (free_space_only) {
         if (CheckCollision(p0)) {
@@ -260,6 +263,8 @@ bool OctoClass::OctoRRG(const Eigen::Vector3d &p0,
         // Populate final path
         if (index_path.size() == 0) {
             ROS_WARN("[mapper] RRG Error: Couldn't find solution through Astar!");
+            *n_rrg_nodes = n_nodes;
+            *plan_time = (ros::Time::now() - t0).toSec();
             return false;
         } else {
             for (uint i = 0; i < index_path.size(); i++) {
@@ -269,6 +274,8 @@ bool OctoClass::OctoRRG(const Eigen::Vector3d &p0,
         }
     } else {
         ROS_WARN("[mapper] RRG Error: Could not find a path from p0 to pf!");
+        *n_rrg_nodes = n_nodes;
+        *plan_time = (ros::Time::now() - t0).toSec();
         return false;
     }
 

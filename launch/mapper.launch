@@ -37,11 +37,11 @@
             <param name="fading_memory_update_rate" value="1"/><!-- Hz -->
 
             <!-- Map inflation parameters -->
-            <param name="inflate_radius_xy" value="0.40"/>       <!-- meters -->
+            <param name="inflate_radius_xy" value="0.50"/>       <!-- meters -->
             <param name="inflate_radius_z" value="0.30"/>       <!-- meters -->
 
             <!-- Camera FOV (radians): map is only updated within this FOV -->
-            <param name="cam_fov" value="0.80"/>             <!-- radians -->
+            <param name="cam_fov" value="0.7"/>             <!-- radians -->
 
             <!-- Camera's width divided by height (unitless) -->
             <param name="cam_aspect_ratio" value="1.3099"/>
