@@ -4,6 +4,8 @@
     <arg name="launch_rviz" default="true" />
     <arg name="process_pcl_at_startup" default="true" />
     <arg name="inertial_frame_id" default="/map" />
+    <arg name="depth_cam_prefix" default="/" />
+    <arg name="depth_cam_suffix" default="/camera/depth/compressed_points" />
 
     <group ns="$(arg namespace)">
         <node pkg="mapper"
@@ -15,9 +17,9 @@
             <param name="namespace" value="$(arg namespace)"/>
 
             <!-- Set of depth camera topics -->
-            <param name="depth_cam_prefix" value="/"/>
+            <param name="depth_cam_prefix" value="$(arg depth_cam_prefix)"/>
             <rosparam param="depth_cam_names"> ["Sauron"] </rosparam>
-            <param name="depth_cam_suffix" value="/camera/depth/color/compressed_points"/>
+            <param name="depth_cam_suffix" value="$(arg depth_cam_suffix)"/>
 
             <!-- tf frame ID for the cameras above -->
             <rosparam param="cam_frame_id"> ["/Sauron/camera_depth_optical_frame"] </rosparam>

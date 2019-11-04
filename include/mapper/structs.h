@@ -47,7 +47,7 @@ struct globalVariables {
     tf::StampedTransform tf_perch2world;
     tf::StampedTransform tf_body2world;
     std::vector<tf::StampedTransform> tf_cameras2world;
-    octoclass::OctoClass octomap = octoclass::OctoClass(0.05);
+    octoclass::OctoClass octomap = octoclass::OctoClass(0.05, "map");
     sampled_traj::SampledTrajectory3D sampled_traj;
     std::queue<stampedPcl> pcl_queue;
     bool update_map;

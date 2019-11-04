@@ -44,13 +44,14 @@ class OctoClass{
     algebra_3d::FrustumPlanes cam_frustum_;
 
     // Constructor
-    explicit OctoClass(const double resolution_in);  // Resolution in meters
+    explicit OctoClass(const double &resolution, const std::string &inertial_frame_id);  // Resolution in meters
     OctoClass();
 
     // Mapping methods
     void SetMemory(const double memory);  // Fading memory time
     void SetMaxRange(const double max_range);  // Max range for mapping
     void SetMinRange(const double min_range);  // Min range for mapping
+    void SetInertialFrame(const std::string &inertial_frame_id); //Inertial frame id
     void SetResolution(const double resolution_in);  // Resolution of the octomap
     void ResetMap();  // Reset the octomap structure
     void CopyMap(octomap::OcTree &tree, octomap::OcTree &tree_inflated);
@@ -164,6 +165,7 @@ class OctoClass{
     float inflate_radius_xy_, inflate_radius_z_;
     std::vector<Eigen::Vector3d> sphere_;  // Discretized sphere used in map inflation
     std::vector<double> depth_volumes_;     // Volume per depth in the tree
+    std::string inertial_frame_id_;
 
     // Methods
     double VectorNormSquared(const double &x,

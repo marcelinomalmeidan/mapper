@@ -137,6 +137,7 @@ void MapperClass::Initialize(ros::NodeHandle *nh) {
     globals_.octomap.SetResolution(map_resolution);
     globals_.octomap.SetMaxRange(max_range);
     globals_.octomap.SetMinRange(min_range);
+    globals_.octomap.SetInertialFrame(inertial_frame_id);
     globals_.octomap.SetMemory(memory_time);
     globals_.octomap.SetMapInflation(inflate_radius_xy, inflate_radius_z);
     globals_.octomap.SetCamFrustum(cam_fov, aspect_ratio);

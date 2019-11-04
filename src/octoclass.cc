@@ -24,11 +24,12 @@
 
 namespace octoclass {
 
-OctoClass::OctoClass(const double resolution) {
+OctoClass::OctoClass(const double &resolution, const std::string &inertial_frame_id) {
     tree_.setResolution(resolution);
     tree_inflated_.setResolution(resolution);
     tree_depth_ = tree_.getTreeDepth();
     resolution_ = resolution;
+    inertial_frame_id_ = inertial_frame_id;
 }
 
 OctoClass::OctoClass() {
@@ -48,6 +49,11 @@ void OctoClass::SetMaxRange(const double max_range) {
 void OctoClass::SetMinRange(const double min_range) {
     min_range_ = min_range;
     ROS_DEBUG("Minimum range: %f meters", min_range_);
+}
+
+void OctoClass::SetInertialFrame(const std::string &inertial_frame_id) {
+    inertial_frame_id_ = inertial_frame_id;
+    ROS_DEBUG("Inertial frame id: %s", inertial_frame_id.c_str());
 }
 
 void OctoClass::SetResolution(const double resolution_in) {
@@ -511,7 +517,7 @@ void OctoClass::TreeVisMarkers(visualization_msgs::MarkerArray* obstacles,
     for (unsigned i= 0; i < obstacles->markers.size(); ++i) {
         const double size = tree_.getNodeSize(i);
 
-        obstacles->markers[i].header.frame_id = "map";
+        obstacles->markers[i].header.frame_id = inertial_frame_id_;
         obstacles->markers[i].header.stamp = rostime;
         obstacles->markers[i].ns = "obstacleMap";
         obstacles->markers[i].id = i;
