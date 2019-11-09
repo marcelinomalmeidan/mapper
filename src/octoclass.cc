@@ -98,6 +98,7 @@ void OctoClass::SetMapInflation(const double &inflate_radius_xy, const double &i
                 // Check if point is inside ellipse using ellipse equation
                 if (xyz_normalized.dot(xyz_normalized) <= 1.0001) {
                     sphere_.push_back(xyz);
+                    // std::cout << xyz.transpose() << std::endl;
                 }
             }
         }
@@ -254,6 +255,7 @@ void OctoClass::PclToRayOctomap(const pcl::PointCloud< pcl::PointXYZ > &cloud,
                     central_point = tree_.keyToCoord(k);
                     for (uint jj = 0; jj < sphere_.size(); jj++) {
                         cur_point = central_point + octomap::point3d(sphere_[jj][0], sphere_[jj][1], sphere_[jj][2]);
+                        // Eigen::Vector3d pt = Eigen::Vector3d(cur_point.x(), cur_point.y(), cur_point.z());
                         if (!frustum.IsPointWithinFrustum(Eigen::Vector3d(cur_point.x(),
                                                                           cur_point.y(),
                                                                           cur_point.z()))) {
@@ -275,11 +277,11 @@ void OctoClass::PclToRayOctomap(const pcl::PointCloud< pcl::PointXYZ > &cloud,
 
     for (octomap::KeySet::iterator it = endpoints_inflated.begin(); it != endpoints_inflated.end(); ++it) {
         // Only add nodes that are being added to the slim tree as well
-        if (free_cells.find(*it) != free_cells.end()) {
+        // if (free_cells.find(*it) != free_cells.end()) {
             tree_inflated_.updateNode(*it, true);
-        } else if (endpoints.find(*it) != endpoints.end()) {
-            tree_inflated_.updateNode(*it, true);
-        }
+        // } else if (endpoints.find(*it) != endpoints.end()) {
+        //     tree_inflated_.updateNode(*it, true);
+        // }
     }
     for (octomap::KeySet::iterator it = occ_cells_in_range.begin(); it != occ_cells_in_range.end(); ++it) {
         // const octomap::point3d& p = tree_.keyToCoord(*it);
